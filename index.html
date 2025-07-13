@@ -1,10 +1,11 @@
 
 <!DOCTYPE html>
+
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>EE 的服飾店</title>
-  <style>
+<meta charset="utf-8"/>
+<title>SHAN 7</title>
+<style>
     body { font-family: sans-serif; margin: 0; padding: 0; }
     .navbar { background: #222; color: white; padding: 10px; position: fixed; top: 0; right: 0; left: 0; z-index: 1000; }
     .cart-btn { position: fixed; top: 10px; right: 10px; background: orange; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
@@ -18,28 +19,24 @@
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <h2>EE 的服飾店</h2>
-  </div>
-
-  <button class="cart-btn" onclick="toggleCart()">🛒 購物車</button>
-  <div id="cart"></div>
-  <div id="checkout-form">
-    <h3>請填寫資料</h3>
-    <form action="https://formspree.io/f/xovwgoeb" method="POST">
-      <input type="text" name="name" placeholder="姓名" required><br><br>
-      <input type="tel" name="phone" placeholder="電話" required><br><br>
-      <input type="email" name="email" placeholder="信箱" required><br><br>
-      <input type="hidden" name="cart" id="hidden-cart">
-      <button type="submit">送出訂單</button>
-    </form>
-  </div>
-
-  <div class="product-container" id="product-list"></div>
-
-  <div id="product-modal"></div>
-
-  <script>
+<div class="navbar">
+<h2>EE 的服飾店</h2>
+</div>
+<button class="cart-btn" onclick="toggleCart()">🛒 購物車</button>
+<div id="cart"></div>
+<div id="checkout-form">
+<h3>請填寫資料</h3>
+<form action="https://formspree.io/f/xovwgoeb" method="POST">
+<input name="name" placeholder="姓名" required="" type="text"/><br/><br/>
+<input name="phone" placeholder="電話" required="" type="tel"/><br/><br/>
+<input name="email" placeholder="信箱" required="" type="email"/><br/><br/>
+<input id="hidden-cart" name="cart" type="hidden"/>
+<button type="submit">送出訂單</button>
+</form>
+</div>
+<div class="product-container" id="product-list"></div>
+<div id="product-modal"></div>
+<script>
     const products = [
       {
         name: "黑色 T-shirt",
