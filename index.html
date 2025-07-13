@@ -1,123 +1,47 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>EE服飾商店</title>
-  <style>
-    body {
-      font-family: Arial;
-      padding: 20px;
-      margin: 0;
-    }
-
-    .product {
-      margin-bottom: 20px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 10px;
-    }
-
-    .product img {
-      width: 200px;
-      height: auto;
-      border-radius: 8px;
-    }
-
-    #cart {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 250px;
-      background: #f9f9f9;
-      border: 2px solid #999;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-      z-index: 999;
-    }
-
-    #cart h3 {
-      margin-top: 0;
-    }
-
-    form {
-      display: none;
-      margin-top: 30px;
-    }
-
-    button {
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>EE 服飾商店</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; }
+        .cart { position: fixed; top: 20px; right: 20px; background: #f90; padding: 10px; border-radius: 5px; }
+        .product { margin-bottom: 20px; }
+        button { padding: 8px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>EE 服飾商店</h1>
+        <div class="cart">🛒 購物車 (<span id="count">0</span>)</div>
+    </header>
 
-  <h1>🛒 EE服飾｜線上商店</h1>
+    <div class="product">
+        <h2>黑色 T-shirt</h2>
+        <p>價格：NT$400</p>
+        <button onclick="addToCart()">加入購物車</button>
+    </div>
 
-  <div class="product">
-    <h2>黑色 T-shirt</h2>
-    <img src="https://via.placeholder.com/200?text=黑T" alt="黑色 T-shirt">
-    <p>價格：<span class="price">599</span> 元</p>
-    <button onclick="addToCart('黑色 T-shirt', 599)">加入購物車</button>
-  </div>
+    <div class="product">
+        <h2>白色帽T</h2>
+        <p>價格：NT$800</p>
+        <button onclick="addToCart()">加入購物車</button>
+    </div>
 
-  <div class="product">
-    <h2>白色帽T</h2>
-    <img src="https://via.placeholder.com/200?text=白帽T" alt="白色帽T">
-    <p>價格：<span class="price">899</span> 元</p>
-    <button onclick="addToCart('白色帽T', 899)">加入購物車</button>
-  </div>
+    <button onclick="checkout()">🧾 結帳</button>
 
-  <div id="cart">
-    <h3>🧺 購物車</h3>
-    <ul id="cart-items" style="padding-left: 18px;"></ul>
-    <p>總金額：<span id="total">0</span> 元</p>
-    <button onclick="showCheckout()">➡️ 結帳</button>
-  </div>
+    <script>
+        let count = 0;
+        function addToCart() {
+            count++;
+            document.getElementById('count').textContent = count;
+        }
 
-  <form id="checkout-form" action="https://formspree.io/f/xovwgoeb" method="POST">
-    <h3>📦 結帳資訊</h3>
-    <input type="hidden" name="訂單內容" id="order-data">
-    <label>姓名：</label><br>
-    <input type="text" name="name" required><br><br>
-    <label>Gmail：</label><br>
-    <input type="email" name="email" required><br><br>
-    <button type="submit">✅ 送出訂單</button>
-  </form>
-
-  <script>
-    let cart = [];
-
-    function addToCart(name, price) {
-      cart.push({ name, price });
-      updateCart();
-    }
-
-    function updateCart() {
-      const cartList = document.getElementById("cart-items");
-      const totalEl = document.getElementById("total");
-      cartList.innerHTML = "";
-      let total = 0;
-
-      cart.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.name} - ${item.price}元`;
-        cartList.appendChild(li);
-        total += item.price;
-      });
-
-      totalEl.textContent = total;
-    }
-
-    function showCheckout() {
-      const form = document.getElementById("checkout-form");
-      const orderData = document.getElementById("order-data");
-      let orderText = cart.map(i => `${i.name} - ${i.price}元`).join(", ");
-      orderData.value = orderText;
-      form.style.display = "block";
-      window.scrollTo(0, document.body.scrollHeight);
-    }
-  </script>
-
+        function checkout() {
+            window.location.href = 'https://formspree.io/f/xovwgoeb';
+        }
+    </script>
 </body>
 </html>
