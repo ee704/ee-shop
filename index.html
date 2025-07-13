@@ -1,47 +1,139 @@
 
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <title>EE 服飾商店</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        header { display: flex; justify-content: space-between; align-items: center; }
-        .cart { position: fixed; top: 20px; right: 20px; background: #f90; padding: 10px; border-radius: 5px; }
-        .product { margin-bottom: 20px; }
-        button { padding: 8px 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <title>EE 的服飾店</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    .navbar { background: #222; color: white; padding: 10px; position: fixed; top: 0; right: 0; left: 0; z-index: 1000; }
+    .cart-btn { position: fixed; top: 10px; right: 10px; background: orange; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+    .product-container { display: flex; flex-wrap: wrap; padding: 80px 20px 20px; gap: 20px; justify-content: center; }
+    .product-card { border: 1px solid #ccc; border-radius: 10px; width: 200px; padding: 10px; text-align: center; cursor: pointer; }
+    .product-card img { width: 100%; border-radius: 5px; }
+    .product-card h3, .product-card p { margin: 5px 0; }
+    #cart, #checkout-form, #product-modal { display: none; background: white; border: 1px solid #aaa; padding: 20px; position: fixed; top: 80px; right: 10px; width: 300px; z-index: 999; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+    #product-modal { left: 50%; top: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; }
+    .show { display: block !important; }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>EE 服飾商店</h1>
-        <div class="cart">🛒 購物車 (<span id="count">0</span>)</div>
-    </header>
+  <div class="navbar">
+    <h2>EE 的服飾店</h2>
+  </div>
 
-    <div class="product">
-        <h2>黑色 T-shirt</h2>
-        <p>價格：NT$400</p>
-        <button onclick="addToCart()">加入購物車</button>
-    </div>
+  <button class="cart-btn" onclick="toggleCart()">🛒 購物車</button>
+  <div id="cart"></div>
+  <div id="checkout-form">
+    <h3>請填寫資料</h3>
+    <form action="https://formspree.io/f/xovwgoeb" method="POST">
+      <input type="text" name="name" placeholder="姓名" required><br><br>
+      <input type="tel" name="phone" placeholder="電話" required><br><br>
+      <input type="email" name="email" placeholder="信箱" required><br><br>
+      <input type="hidden" name="cart" id="hidden-cart">
+      <button type="submit">送出訂單</button>
+    </form>
+  </div>
 
-    <div class="product">
-        <h2>白色帽T</h2>
-        <p>價格：NT$800</p>
-        <button onclick="addToCart()">加入購物車</button>
-    </div>
+  <div class="product-container" id="product-list"></div>
 
-    <button onclick="checkout()">🧾 結帳</button>
+  <div id="product-modal"></div>
 
-    <script>
-        let count = 0;
-        function addToCart() {
-            count++;
-            document.getElementById('count').textContent = count;
-        }
+  <script>
+    const products = [
+      {
+        name: "黑色 T-shirt",
+        price: 500,
+        img: "https://via.placeholder.com/300x300?text=黑色+T-shirt",
+        desc: "純棉舒適短袖，經典百搭"
+      },
+      {
+        name: "白色帽T",
+        price: 980,
+        img: "https://via.placeholder.com/300x300?text=白色帽T",
+        desc: "保暖連帽設計，適合秋冬"
+      },
+      {
+        name: "牛仔褲",
+        price: 850,
+        img: "https://via.placeholder.com/300x300?text=牛仔褲",
+        desc: "修身剪裁，顯瘦有型"
+      }
+    ];
 
-        function checkout() {
-            window.location.href = 'https://formspree.io/f/xovwgoeb';
-        }
-    </script>
+    const cart = [];
+
+    function renderProducts() {
+      const container = document.getElementById("product-list");
+      products.forEach((p, index) => {
+        const div = document.createElement("div");
+        div.className = "product-card";
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>$${p.price}</p>
+          <button onclick="event.stopPropagation(); addToCart(${index})">加入購物車</button>
+        `;
+        div.onclick = () => showModal(p);
+        container.appendChild(div);
+      });
+    }
+
+    function showModal(product) {
+      const modal = document.getElementById("product-modal");
+      modal.innerHTML = `
+        <h2>${product.name}</h2>
+        <img src="${product.img}" alt="${product.name}" style="width:100%;border-radius:10px;">
+        <p><strong>價格：</strong>$${product.price}</p>
+        <p>${product.desc}</p>
+        <button onclick="addToCartByName('${product.name}', ${product.price})">加入購物車</button>
+        <br><br>
+        <button onclick="closeModal()">關閉</button>
+      `;
+      modal.classList.add("show");
+    }
+
+    function closeModal() {
+      document.getElementById("product-modal").classList.remove("show");
+    }
+
+    function addToCart(index) {
+      const p = products[index];
+      cart.push(p);
+      alert(p.name + " 已加入購物車！");
+      updateCart();
+    }
+
+    function addToCartByName(name, price) {
+      cart.push({ name, price });
+      alert(name + " 已加入購物車！");
+      updateCart();
+    }
+
+    function toggleCart() {
+      const cartDiv = document.getElementById("cart");
+      cartDiv.classList.toggle("show");
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartDiv = document.getElementById("cart");
+      cartDiv.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        cartDiv.innerHTML += `<p>${item.name} - $${item.price}</p>`;
+        total += item.price;
+      });
+      cartDiv.innerHTML += `<hr><strong>總金額：$${total}</strong><br><br><button onclick="showCheckout()">結帳</button>`;
+    }
+
+    function showCheckout() {
+      document.getElementById("checkout-form").classList.add("show");
+      const cartDetails = cart.map(item => `${item.name} - $${item.price}`).join(", ");
+      document.getElementById("hidden-cart").value = cartDetails;
+    }
+
+    renderProducts();
+  </script>
 </body>
 </html>
