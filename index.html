@@ -3,148 +3,164 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>SHAN 7 服飾店</title>
+  <title>SHAN 7 - 線上服飾店</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f4f4f4;
     }
     header {
       background-color: #111;
-      color: white;
+      color: #fff;
       padding: 1rem;
-      font-size: 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
     }
     .cart-icon {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: #eee;
-      border: 1px solid #ccc;
-      padding: 0.5rem;
+      position: relative;
       cursor: pointer;
     }
-    .section {
+    .cart-popup {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      z-index: 999;
+      width: 300px;
+    }
+    .cart-popup.active {
+      display: block;
+    }
+    .product-section {
       padding: 1rem;
     }
-    .product-grid {
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #333;
+    }
+    .products {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
     }
     .product {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      background: #fafafa;
-    }
-    .cart {
-      position: fixed;
-      top: 4rem;
-      right: 1rem;
       background: white;
-      border: 1px solid #ccc;
       padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .product img {
+      max-width: 100%;
+      height: auto;
+    }
+    .checkout {
+      margin-top: 1rem;
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: green;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
       display: none;
-      width: 300px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    .form-field {
-      margin: 0.5rem 0;
-    }
-    .form-field input {
-      width: 100%;
+      z-index: 9999;
     }
   </style>
 </head>
 <body>
-  <header>SHAN 7</header>
-  <div class="cart-icon" onclick="toggleCart()">🛒 購物車 (<span id="cart-count">0</span>)</div>
-  <div class="cart" id="cart">
-    <div id="cart-items"></div>
-    <p>總金額：$<span id="total">0</span></p>
-    <form onsubmit="submitForm(event)">
-      <div class="form-field"><input type="text" placeholder="姓名" required></div>
-      <div class="form-field"><input type="tel" placeholder="電話" required></div>
-      <div class="form-field"><input type="email" placeholder="信箱" required></div>
-      <div class="form-field"><input type="text" placeholder="7-11 門市名稱" required></div>
-      <div class="form-field"><input type="text" placeholder="7-11 門市地址" required></div>
-      <button type="submit">提交訂單</button>
-    </form>
-  </div>
+  <div class="notification" id="notification">已加入購物車！</div>
+  <header>
+    <h1>SHAN 7</h1>
+    <div class="cart-icon" onclick="toggleCart()">
+      🛒 購物車 (<span id="cart-count">0</span>)
+      <div class="cart-popup" id="cart-popup">
+        <ul id="cart-items"></ul>
+        <strong>總金額：$<span id="cart-total">0</span></strong>
+        <form class="checkout">
+          <p><input type="text" placeholder="姓名" required></p>
+          <p><input type="tel" placeholder="電話" required></p>
+          <p><input type="email" placeholder="信箱" required></p>
+          <p><input type="text" placeholder="7-11 門市名稱" required></p>
+          <p><input type="text" placeholder="7-11 門市地址" required></p>
+          <p><button type="submit">送出訂單</button></p>
+        </form>
+      </div>
+    </div>
+  </header>
 
-  <div class="section">
-    <h2>上衣</h2>
-    <div class="product-grid" id="tops"></div>
-    <h2>褲子</h2>
-    <div class="product-grid" id="pants"></div>
-    <h2>外套</h2>
-    <div class="product-grid" id="jackets"></div>
-  </div>
+  <main>
+    <section class="product-section">
+      <h2 class="section-title">上衣</h2>
+      <div class="products">
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=上衣1"><p>黑色T恤 - $390</p><button onclick="addToCart('黑色T恤', 390)">加入購物車</button></div>
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=上衣2"><p>白色背心 - $320</p><button onclick="addToCart('白色背心', 320)">加入購物車</button></div>
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=上衣3"><p>紅色襯衫 - $490</p><button onclick="addToCart('紅色襯衫', 490)">加入購物車</button></div>
+      </div>
+    </section>
+    <section class="product-section">
+      <h2 class="section-title">褲子</h2>
+      <div class="products">
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=褲子1"><p>牛仔褲 - $680</p><button onclick="addToCart('牛仔褲', 680)">加入購物車</button></div>
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=褲子2"><p>卡其短褲 - $450</p><button onclick="addToCart('卡其短褲', 450)">加入購物車</button></div>
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=褲子3"><p>黑色運動褲 - $550</p><button onclick="addToCart('黑色運動褲', 550)">加入購物車</button></div>
+      </div>
+    </section>
+    <section class="product-section">
+      <h2 class="section-title">外套</h2>
+      <div class="products">
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=外套1"><p>牛仔外套 - $880</p><button onclick="addToCart('牛仔外套', 880)">加入購物車</button></div>
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=外套2"><p>風衣外套 - $990</p><button onclick="addToCart('風衣外套', 990)">加入購物車</button></div>
+        <div class="product"><img src="https://via.placeholder.com/200x200?text=外套3"><p>軍綠連帽外套 - $1050</p><button onclick="addToCart('軍綠連帽外套', 1050)">加入購物車</button></div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    const products = [
-      { name: '純白 T 恤', price: 399, image: 'https://via.placeholder.com/180', category: 'tops' },
-      { name: '印花 T 恤', price: 499, image: 'https://via.placeholder.com/180', category: 'tops' },
-      { name: '牛仔褲', price: 899, image: 'https://via.placeholder.com/180', category: 'pants' },
-      { name: '運動短褲', price: 499, image: 'https://via.placeholder.com/180', category: 'pants' },
-      { name: '連帽外套', price: 1299, image: 'https://via.placeholder.com/180', category: 'jackets' },
-      { name: '風衣外套', price: 1599, image: 'https://via.placeholder.com/180', category: 'jackets' },
-      { name: '條紋上衣', price: 429, image: 'https://via.placeholder.com/180', category: 'tops' },
-      { name: '破壞牛仔褲', price: 999, image: 'https://via.placeholder.com/180', category: 'pants' },
-      { name: '厚棉外套', price: 1899, image: 'https://via.placeholder.com/180', category: 'jackets' },
-      { name: '素色長袖', price: 599, image: 'https://via.placeholder.com/180', category: 'tops' }
-    ];
-    const cart = [];
-
-    function addToCart(product) {
-      cart.push(product);
-      alert('已加入購物車！');
-      renderCart();
+    let cart = [];
+    function toggleCart() {
+      document.getElementById('cart-popup').classList.toggle('active');
     }
-
-    function renderProducts() {
-      for (const product of products) {
-        const div = document.createElement('div');
-        div.className = 'product';
-        div.innerHTML = \`
-          <img src="\${product.image}" width="100%">
-          <h4>\${product.name}</h4>
-          <p>價格：\${product.price} 元</p>
-          <button onclick='addToCart(\${JSON.stringify(product)})'>加入購物車</button>
-        \`;
-        document.getElementById(product.category).appendChild(div);
-      }
+    function showNotification() {
+      const note = document.getElementById('notification');
+      note.style.display = 'block';
+      setTimeout(() => { note.style.display = 'none'; }, 1500);
     }
-
-    function renderCart() {
-      const list = document.getElementById('cart-items');
-      const total = document.getElementById('total');
+    function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCart();
+      showNotification();
+    }
+    function updateCart() {
+      const items = document.getElementById('cart-items');
+      const total = document.getElementById('cart-total');
       const count = document.getElementById('cart-count');
-      list.innerHTML = '';
+      items.innerHTML = '';
       let sum = 0;
-      for (const item of cart) {
-        const p = document.createElement('p');
-        p.textContent = item.name + ' - $' + item.price;
-        list.appendChild(p);
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price}`;
+        items.appendChild(li);
         sum += item.price;
-      }
+      });
       total.textContent = sum;
       count.textContent = cart.length;
     }
-
-    function toggleCart() {
-      const cartDiv = document.getElementById('cart');
-      cartDiv.style.display = cartDiv.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function submitForm(e) {
-      e.preventDefault();
-      alert('已送出訂單！');
-    }
-
-    renderProducts();
   </script>
 </body>
 </html>
