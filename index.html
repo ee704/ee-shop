@@ -2,239 +2,149 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHAN 7</title>
+  <meta charset="UTF-8">
+  <title>SHAN 7 服飾店</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       margin: 0;
       padding: 0;
     }
     header {
-      background-color: black;
+      background-color: #111;
       color: white;
-      padding: 15px 20px;
-      font-size: 20px;
-    }
-    main {
-      padding: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .product {
-      width: 200px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .product img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 5px;
+      padding: 1rem;
+      font-size: 1.5rem;
     }
     .cart-icon {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
+      top: 1rem;
+      right: 1rem;
+      background: #eee;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
       cursor: pointer;
     }
-    .cart-icon img {
-      width: 28px;
-      height: 28px;
+    .section {
+      padding: 1rem;
     }
-    .cart-panel {
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .product {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      background: #fafafa;
+    }
+    .cart {
       position: fixed;
-      right: -300px;
-      top: 0;
-      height: 100%;
+      top: 4rem;
+      right: 1rem;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      display: none;
       width: 300px;
-      background: #f9f9f9;
-      box-shadow: -2px 0 6px rgba(0,0,0,0.3);
-      padding: 20px;
-      transition: right 0.3s ease;
-      z-index: 9999;
+      max-height: 400px;
       overflow-y: auto;
     }
-    .cart-panel.open {
-      right: 0;
+    .form-field {
+      margin: 0.5rem 0;
     }
-    .cart-panel h2 {
-      margin-top: 0;
-    }
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-    }
-    .cart-total {
-      font-weight: bold;
-      margin-top: 20px;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 99999;
-      left: 0;
-      top: 0;
+    .form-field input {
       width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.6);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      width: 80%;
-      max-width: 500px;
-      border-radius: 10px;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button {
-      background-color: black;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    form input {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
     }
   </style>
 </head>
 <body>
   <header>SHAN 7</header>
-
-  <div class="cart-icon" onclick="toggleCart()">
-    <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Cart">
-  </div>
-
-  <div id="cart-panel" class="cart-panel">
-    <h2>購物車</h2>
+  <div class="cart-icon" onclick="toggleCart()">🛒 購物車 (<span id="cart-count">0</span>)</div>
+  <div class="cart" id="cart">
     <div id="cart-items"></div>
-    <div class="cart-total" id="cart-total">總金額：NT$0</div>
-    <button onclick="showCheckout()">結帳</button>
+    <p>總金額：$<span id="total">0</span></p>
+    <form onsubmit="submitForm(event)">
+      <div class="form-field"><input type="text" placeholder="姓名" required></div>
+      <div class="form-field"><input type="tel" placeholder="電話" required></div>
+      <div class="form-field"><input type="email" placeholder="信箱" required></div>
+      <div class="form-field"><input type="text" placeholder="7-11 門市名稱" required></div>
+      <div class="form-field"><input type="text" placeholder="7-11 門市地址" required></div>
+      <button type="submit">提交訂單</button>
+    </form>
   </div>
 
-  <main>
-    <div class="product" onclick="showProductDetail('純白短T', '舒適純棉材質，夏日首選', 'https://via.placeholder.com/200x150.png?text=白T', 399)">
-      <img src="https://via.placeholder.com/200x150.png?text=白T" alt="白T">
-      <h3>純白短T</h3>
-      <p>NT$399</p>
-    </div>
-    <div class="product" onclick="showProductDetail('經典牛仔褲', '耐磨刷色款式，時尚百搭', 'https://via.placeholder.com/200x150.png?text=牛仔褲', 799)">
-      <img src="https://via.placeholder.com/200x150.png?text=牛仔褲" alt="牛仔褲">
-      <h3>經典牛仔褲</h3>
-      <p>NT$799</p>
-    </div>
-    <div class="product" onclick="showProductDetail('連帽外套', '休閒風格，秋冬保暖必備', 'https://via.placeholder.com/200x150.png?text=連帽外套', 999)">
-      <img src="https://via.placeholder.com/200x150.png?text=連帽外套" alt="外套">
-      <h3>連帽外套</h3>
-      <p>NT$999</p>
-    </div>
-  </main>
-
-  <div id="product-modal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeProductDetail()">&times;</span>
-      <img id="modal-img" src="" alt="商品圖" style="width: 100%;">
-      <h2 id="modal-title">商品名稱</h2>
-      <p id="modal-desc">商品描述</p>
-      <p id="modal-price" style="font-weight: bold;"></p>
-      <button onclick="addToCart()">加入購物車</button>
-    </div>
-  </div>
-
-  <div id="checkout-modal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeCheckout()">&times;</span>
-      <h2>填寫資料</h2>
-      <form action="https://formspree.io/f/xovwgoeb" method="POST">
-        <input type="text" name="name" placeholder="姓名" required>
-        <input type="tel" name="phone" placeholder="電話" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="hidden" name="order" id="order-detail" value="">
-        <button type="submit">送出訂單</button>
-      </form>
-    </div>
+  <div class="section">
+    <h2>上衣</h2>
+    <div class="product-grid" id="tops"></div>
+    <h2>褲子</h2>
+    <div class="product-grid" id="pants"></div>
+    <h2>外套</h2>
+    <div class="product-grid" id="jackets"></div>
   </div>
 
   <script>
-    let cart = [];
-    let currentItem = {};
+    const products = [
+      { name: '純白 T 恤', price: 399, image: 'https://via.placeholder.com/180', category: 'tops' },
+      { name: '印花 T 恤', price: 499, image: 'https://via.placeholder.com/180', category: 'tops' },
+      { name: '牛仔褲', price: 899, image: 'https://via.placeholder.com/180', category: 'pants' },
+      { name: '運動短褲', price: 499, image: 'https://via.placeholder.com/180', category: 'pants' },
+      { name: '連帽外套', price: 1299, image: 'https://via.placeholder.com/180', category: 'jackets' },
+      { name: '風衣外套', price: 1599, image: 'https://via.placeholder.com/180', category: 'jackets' },
+      { name: '條紋上衣', price: 429, image: 'https://via.placeholder.com/180', category: 'tops' },
+      { name: '破壞牛仔褲', price: 999, image: 'https://via.placeholder.com/180', category: 'pants' },
+      { name: '厚棉外套', price: 1899, image: 'https://via.placeholder.com/180', category: 'jackets' },
+      { name: '素色長袖', price: 599, image: 'https://via.placeholder.com/180', category: 'tops' }
+    ];
+    const cart = [];
 
-    function toggleCart() {
-      document.getElementById("cart-panel").classList.toggle("open");
-    }
-
-    function showProductDetail(name, desc, img, price) {
-      currentItem = { name, price };
-      document.getElementById('modal-title').innerText = name;
-      document.getElementById('modal-desc').innerText = desc;
-      document.getElementById('modal-img').src = img;
-      document.getElementById('modal-price').innerText = 'NT$' + price;
-      document.getElementById('product-modal').style.display = 'block';
-    }
-
-    function closeProductDetail() {
-      document.getElementById('product-modal').style.display = 'none';
-    }
-
-    function addToCart() {
-      cart.push(currentItem);
+    function addToCart(product) {
+      cart.push(product);
+      alert('已加入購物車！');
       renderCart();
-      closeProductDetail();
+    }
+
+    function renderProducts() {
+      for (const product of products) {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = \`
+          <img src="\${product.image}" width="100%">
+          <h4>\${product.name}</h4>
+          <p>價格：\${product.price} 元</p>
+          <button onclick='addToCart(\${JSON.stringify(product)})'>加入購物車</button>
+        \`;
+        document.getElementById(product.category).appendChild(div);
+      }
     }
 
     function renderCart() {
-      const itemsContainer = document.getElementById('cart-items');
-      const totalContainer = document.getElementById('cart-total');
-      itemsContainer.innerHTML = '';
-      let total = 0;
-      cart.forEach((item, index) => {
-        total += item.price;
-        itemsContainer.innerHTML += `<div class="cart-item">${item.name} - NT$${item.price} <button onclick="removeItem(${index})">X</button></div>`;
-      });
-      totalContainer.innerText = '總金額：NT$' + total;
+      const list = document.getElementById('cart-items');
+      const total = document.getElementById('total');
+      const count = document.getElementById('cart-count');
+      list.innerHTML = '';
+      let sum = 0;
+      for (const item of cart) {
+        const p = document.createElement('p');
+        p.textContent = item.name + ' - $' + item.price;
+        list.appendChild(p);
+        sum += item.price;
+      }
+      total.textContent = sum;
+      count.textContent = cart.length;
     }
 
-    function removeItem(index) {
-      cart.splice(index, 1);
-      renderCart();
+    function toggleCart() {
+      const cartDiv = document.getElementById('cart');
+      cartDiv.style.display = cartDiv.style.display === 'block' ? 'none' : 'block';
     }
 
-    function showCheckout() {
-      let order = cart.map(item => `${item.name} NT$${item.price}`).join("\n");
-      document.getElementById('order-detail').value = order;
-      document.getElementById('checkout-modal').style.display = 'block';
+    function submitForm(e) {
+      e.preventDefault();
+      alert('已送出訂單！');
     }
 
-    function closeCheckout() {
-      document.getElementById('checkout-modal').style.display = 'none';
-    }
+    renderProducts();
   </script>
 </body>
 </html>
