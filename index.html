@@ -15,35 +15,62 @@ h2{color:#ffcc00;border-bottom:2px solid #ffcc00;padding-bottom:5px;}
 label{display:block;margin-top:15px;}
 select{width:100%;padding:8px;margin-top:5px;border-radius:5px;border:none;font-size:1em;}
 .result{margin-top:20px;background:#1f1f1f;padding:15px;border-radius:10px;box-shadow:0 0 10px #000;font-size:1.1em;}
+.card-container{display:flex;flex-wrap:wrap;gap:20px;justify-content:flex-start;}
+.card{background:#1f1f1f;padding:15px;border-radius:10px;width:250px;box-shadow:0 0 10px #000;transition:.3s;}
+.card:hover{transform:scale(1.05);box-shadow:0 0 15px #ffcc00;}
 footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#888;}
 </style>
 </head>
 <body>
+
 <header>花工制霸 - 電摩改裝計算器</header>
-<nav><a href="#calculator">改裝計算器</a></nav>
+<nav>
+    <a href="#calculator">改裝計算器</a>
+    <a href="#tutorial">其他教學與介紹</a>
+</nav>
+
 <section id="calculator">
 <h2>改裝組合查詢（選電機與控制器）</h2>
 <label for="motorSelect">選擇電機：</label>
 <select id="motorSelect">
   <option value="2000">2000W</option>
   <option value="3000">3000W</option>
-  <option value="3000">3000WP</option>
-  <option value="5000">5000WP</option>
-  <option value="6000">6000WP</option>
-  <option value="8000">8000WP</option>
+  <option value="3000WP">3000WP</option>
+  <option value="5000WP">5000WP</option>
+  <option value="6000WP">6000WP</option>
+  <option value="8000WP">8000WP</option>
 </select>
 
 <label for="controllerSelect">選擇南京遠驅控制器：</label>
 <select id="controllerSelect">
-  <option value="72260">72260</option>
-  <option value="72450">72450</option>
-  <option value="72680">72680</option>
-  <option value="72850">72850</option>
-  <option value="72890">72890</option>
+  <!-- 控制器選項會自動依電機篩選 -->
 </select>
 
-<div class="result" id="result">選擇電機與控制器以查看預估速度與續航力（電池固定 72V）。</div>
+<div class="result" id="result">選擇電機以查看可用控制器及預估速度與續航力（電池固定 72V）。</div>
 </section>
+
+<section id="tutorial">
+<h2>其他教學與介紹</h2>
+<div class="card-container">
+  <div class="card">
+    <h3>電摩改裝安全須知</h3>
+    <p>改裝前務必了解電機功率與控制器匹配，確保安全與耐用。</p>
+  </div>
+  <div class="card">
+    <h3>提升續航技巧</h3>
+    <p>使用72V大容量電池，搭配適合電機功率，可有效延長行駛距離。</p>
+  </div>
+  <div class="card">
+    <h3>電摩維護保養</h3>
+    <p>定期檢查線路、電池及控制器，避免過熱或損壞。</p>
+  </div>
+  <div class="card">
+    <h3>控制器選擇建議</h3>
+    <p>不同電機對應不同控制器型號，選擇匹配可獲得最佳速度與續航。</p>
+  </div>
+</div>
+</section>
+
 <footer>&copy; 2025 花工制霸 | 版權所有</footer>
 
 <script>
@@ -55,6 +82,29 @@ const speedData = {
   "72890": { "6000WP":145, "8000WP":155 }
 };
 
+// 每個電機可用控制器對應表
+const motorControllers = {
+  "2000": ["72260"],
+  "3000": ["72450"],
+  "3000WP": ["72450","72680"],
+  "5000WP": ["72680"],
+  "6000WP": ["72850","72890"],
+  "8000WP": ["72850","72890"]
+};
+
+function updateControllers(){
+  const motor = document.getElementById('motorSelect').value;
+  const controllerSelect = document.getElementById('controllerSelect');
+  controllerSelect.innerHTML = '';
+  motorControllers[motor].forEach(ctrl=>{
+    const option = document.createElement('option');
+    option.value = ctrl;
+    option.text = ctrl;
+    controllerSelect.appendChild(option);
+  });
+  calculate();
+}
+
 function calculate(){
   const motor = document.getElementById('motorSelect').value;
   const controller = document.getElementById('controllerSelect').value;
@@ -63,17 +113,13 @@ function calculate(){
 
   let speed;
 
-  // 嘗試使用實測數據
   if(speedData[controller] && speedData[controller][motor]){
     speed = speedData[controller][motor];
   }else{
-    // 推算公式
-    // 假設 3000W 對應 90km/h，按比例推算
     speed = (90 * (parseInt(motor)/3000)).toFixed(1);
   }
 
-  // 續航力公式：batteryWh / motorPower * speed * 0.8
-  const motorPower = parseInt(motor);
+  const motorPower = parseInt(motor.replace(/\D/g,'')); // 取數字部分
   const range = (batteryWh / motorPower * speed * 0.8).toFixed(1);
 
   resultDiv.innerHTML = `
@@ -84,9 +130,11 @@ function calculate(){
   `;
 }
 
-document.getElementById('motorSelect').addEventListener('change', calculate);
+document.getElementById('motorSelect').addEventListener('change', updateControllers);
 document.getElementById('controllerSelect').addEventListener('change', calculate);
-calculate();
+
+// 初次載入
+updateControllers();
 </script>
 </body>
 </html>
