@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>花工制霸</title>
+<title>花工制霸 - 電動摩托改裝計算器</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -65,20 +65,25 @@
         transform: scale(1.05);
         box-shadow: 0 0 15px #ffcc00;
     }
-    table {
+    label {
+        display: block;
+        margin-top: 15px;
+    }
+    select {
         width: 100%;
-        border-collapse: collapse;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: none;
+        font-size: 1em;
+    }
+    .result {
         margin-top: 20px;
-    }
-    table, th, td {
-        border: 1px solid #f5f5f5;
-    }
-    th, td {
-        padding: 10px;
-        text-align: center;
-    }
-    th {
-        background-color: #222;
+        background-color: #1f1f1f;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #000;
+        font-size: 1.1em;
     }
     footer {
         text-align: center;
@@ -91,81 +96,39 @@
 </head>
 <body>
 
-<header>花工制霸</header>
+<header>花工制霸 - 電動摩托改裝計算器</header>
 
 <nav>
-    <a href="#motor">電機改裝</a>
-    <a href="#battery">電池改裝</a>
-    <a href="#controller">控制器改裝</a>
-    <a href="#comparison">改裝效果對比</a>
-    <a href="#tutorial">教學文章</a>
+    <a href="#calculator">改裝計算器</a>
+    <a href="#tutorial">改裝教學</a>
 </nav>
 
-<section id="motor">
-    <h2>電機改裝</h2>
-    <div class="card-container">
-        <div class="card">
-            <h3>全順五代競技版 3000W</h3>
-            <p>改裝後速度：80 km/h</p>
-            <p>續航力：70 km</p>
-        </div>
-        <div class="card">
-            <h3>紀念版 5000W</h3>
-            <p>改裝後速度：120 km/h</p>
-            <p>續航力：65 km</p>
-        </div>
-    </div>
-</section>
+<section id="calculator">
+    <h2>改裝組合查詢</h2>
+    <label for="motorSelect">選擇電機：</label>
+    <select id="motorSelect">
+        <option value="3000" data-efficiency="0.9">全順五代競技版 3000W</option>
+        <option value="5000" data-efficiency="0.85">紀念版 5000W</option>
+        <option value="4000" data-efficiency="0.88">超速版 4000W</option>
+    </select>
 
-<section id="battery">
-    <h2>電池改裝</h2>
-    <div class="card-container">
-        <div class="card">
-            <h3>鋰電池 72V 70Ah</h3>
-            <p>續航力提升：70 km → 90 km</p>
-        </div>
-        <div class="card">
-            <h3>鋰電池 72V 100Ah</h3>
-            <p>續航力提升：70 km → 120 km</p>
-        </div>
-    </div>
-</section>
+    <label for="batterySelect">選擇電池：</label>
+    <select id="batterySelect">
+        <option value="5040">72V 70Ah (5040Wh)</option>
+        <option value="7200">72V 100Ah (7200Wh)</option>
+        <option value="3600">48V 75Ah (3600Wh)</option>
+    </select>
 
-<section id="controller">
-    <h2>控制器改裝</h2>
-    <div class="card-container">
-        <div class="card">
-            <h3>遠驅 72680</h3>
-            <p>支援電機功率：3000W~5000W</p>
-            <p>提升加速性能</p>
-        </div>
-        <div class="card">
-            <h3>高性能控制器 800A</h3>
-            <p>支援電機功率：5000W+</p>
-            <p>最高速度提升</p>
-        </div>
-    </div>
-</section>
+    <label for="controllerSelect">選擇控制器：</label>
+    <select id="controllerSelect">
+        <option value="3000">遠驅 72680 (支援 3000W)</option>
+        <option value="5000">高性能控制器 800A (支援 5000W)</option>
+        <option value="4000">強化版控制器 600A (支援 4000W)</option>
+    </select>
 
-<section id="comparison">
-    <h2>改裝效果對比</h2>
-    <table>
-        <tr>
-            <th>配件</th>
-            <th>速度 (km/h)</th>
-            <th>續航力 (km)</th>
-        </tr>
-        <tr>
-            <td>全順五代競技版 3000W + 72V 70Ah</td>
-            <td>80</td>
-            <td>70</td>
-        </tr>
-        <tr>
-            <td>紀念版 5000W + 72V 100Ah</td>
-            <td>120</td>
-            <td>120</td>
-        </tr>
-    </table>
+    <div class="result" id="result">
+        選擇組合以查看速度與續航力。
+    </div>
 </section>
 
 <section id="tutorial">
@@ -185,6 +148,43 @@
 <footer>
     &copy; 2025 花工制霸 | 版權所有
 </footer>
+
+<script>
+function calculate() {
+    const motorSelect = document.getElementById('motorSelect');
+    const batterySelect = document.getElementById('batterySelect');
+    const controllerSelect = document.getElementById('controllerSelect');
+    const resultDiv = document.getElementById('result');
+
+    const motorPower = parseFloat(motorSelect.value);
+    const motorEff = parseFloat(motorSelect.selectedOptions[0].dataset.efficiency);
+    const batteryWh = parseFloat(batterySelect.value);
+    const controllerMax = parseFloat(controllerSelect.value);
+
+    // 控制器限制電機功率
+    const effectivePower = Math.min(motorPower * motorEff, controllerMax);
+
+    // 假設車輛阻力常數 = 40 (可依實測調整)
+    const vehicleResistance = 40;
+    const speed = (effectivePower / vehicleResistance).toFixed(1); // km/h
+
+    // 續航力計算: batteryWh / effectivePower * speed * 0.8 (效率係數)
+    const range = (batteryWh / effectivePower * speed * 0.8).toFixed(1); // km
+
+    resultDiv.innerHTML = `
+        <strong>預估最高速度：</strong> ${speed} km/h<br>
+        <strong>預估續航力：</strong> ${range} km
+    `;
+}
+
+// 監聽下拉選單變化
+document.getElementById('motorSelect').addEventListener('change', calculate);
+document.getElementById('batterySelect').addEventListener('change', calculate);
+document.getElementById('controllerSelect').addEventListener('change', calculate);
+
+// 初次載入計算
+calculate();
+</script>
 
 </body>
 </html>
