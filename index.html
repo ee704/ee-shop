@@ -5,93 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>花工制霸 - 電動摩托改裝計算器</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #121212;
-        color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background-color: #1f1f1f;
-        padding: 20px;
-        text-align: center;
-        font-size: 2em;
-        font-weight: bold;
-        color: #ffcc00;
-    }
-    nav {
-        background-color: #222;
-        display: flex;
-        justify-content: center;
-    }
-    nav a {
-        color: #f5f5f5;
-        text-decoration: none;
-        margin: 10px 20px;
-        padding: 10px 15px;
-        transition: 0.3s;
-    }
-    nav a:hover {
-        background-color: #ffcc00;
-        color: #121212;
-        border-radius: 5px;
-    }
-    section {
-        padding: 20px;
-        max-width: 1200px;
-        margin: auto;
-    }
-    h2 {
-        color: #ffcc00;
-        border-bottom: 2px solid #ffcc00;
-        padding-bottom: 5px;
-    }
-    .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: flex-start;
-    }
-    .card {
-        background-color: #1f1f1f;
-        padding: 15px;
-        border-radius: 10px;
-        width: 250px;
-        box-shadow: 0 0 10px #000;
-        transition: 0.3s;
-    }
-    .card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px #ffcc00;
-    }
-    label {
-        display: block;
-        margin-top: 15px;
-    }
-    select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border-radius: 5px;
-        border: none;
-        font-size: 1em;
-    }
-    .result {
-        margin-top: 20px;
-        background-color: #1f1f1f;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px #000;
-        font-size: 1.1em;
-    }
-    footer {
-        text-align: center;
-        padding: 20px;
-        background-color: #1f1f1f;
-        margin-top: 20px;
-        color: #888;
-    }
+    body { font-family: Arial, sans-serif; background-color: #121212; color: #f5f5f5; margin: 0; padding: 0; }
+    header { background-color: #1f1f1f; padding: 20px; text-align: center; font-size: 2em; font-weight: bold; color: #ffcc00; }
+    nav { background-color: #222; display: flex; justify-content: center; }
+    nav a { color: #f5f5f5; text-decoration: none; margin: 10px 20px; padding: 10px 15px; transition: 0.3s; }
+    nav a:hover { background-color: #ffcc00; color: #121212; border-radius: 5px; }
+    section { padding: 20px; max-width: 1200px; margin: auto; }
+    h2 { color: #ffcc00; border-bottom: 2px solid #ffcc00; padding-bottom: 5px; }
+    label { display: block; margin-top: 15px; }
+    select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: none; font-size: 1em; }
+    .result { margin-top: 20px; background-color: #1f1f1f; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px #000; font-size: 1.1em; }
+    footer { text-align: center; padding: 20px; background-color: #1f1f1f; margin-top: 20px; color: #888; }
 </style>
 </head>
 <body>
@@ -104,30 +28,16 @@
 </nav>
 
 <section id="calculator">
-    <h2>改裝組合查詢</h2>
+    <h2>改裝組合查詢（只需選電機）</h2>
     <label for="motorSelect">選擇電機：</label>
     <select id="motorSelect">
-        <option value="3000" data-efficiency="0.9">全順五代競技版 3000W</option>
-        <option value="5000" data-efficiency="0.85">紀念版 5000W</option>
-        <option value="4000" data-efficiency="0.88">超速版 4000W</option>
-    </select>
-
-    <label for="batterySelect">選擇電池：</label>
-    <select id="batterySelect">
-        <option value="5040">72V 70Ah (5040Wh)</option>
-        <option value="7200">72V 100Ah (7200Wh)</option>
-        <option value="3600">48V 75Ah (3600Wh)</option>
-    </select>
-
-    <label for="controllerSelect">選擇控制器：</label>
-    <select id="controllerSelect">
-        <option value="3000">遠驅 72680 (支援 3000W)</option>
-        <option value="5000">高性能控制器 800A (支援 5000W)</option>
-        <option value="4000">強化版控制器 600A (支援 4000W)</option>
+        <option value="3000" data-efficiency="0.9" data-controller="遠驅 72680" data-battery="72V 70Ah (5040Wh)">全順五代競技版 3000W</option>
+        <option value="5000" data-efficiency="0.85" data-controller="高性能控制器 800A" data-battery="72V 100Ah (7200Wh)">紀念版 5000W</option>
+        <option value="4000" data-efficiency="0.88" data-controller="強化版控制器 600A" data-battery="72V 70Ah (5040Wh)">超速版 4000W</option>
     </select>
 
     <div class="result" id="result">
-        選擇組合以查看速度與續航力。
+        選擇電機以查看推薦控制器、電池，以及預估速度與續航力。
     </div>
 </section>
 
@@ -152,26 +62,27 @@
 <script>
 function calculate() {
     const motorSelect = document.getElementById('motorSelect');
-    const batterySelect = document.getElementById('batterySelect');
-    const controllerSelect = document.getElementById('controllerSelect');
     const resultDiv = document.getElementById('result');
 
     const motorPower = parseFloat(motorSelect.value);
     const motorEff = parseFloat(motorSelect.selectedOptions[0].dataset.efficiency);
-    const batteryWh = parseFloat(batterySelect.value);
-    const controllerMax = parseFloat(controllerSelect.value);
+    const controller = motorSelect.selectedOptions[0].dataset.controller;
+    const battery = motorSelect.selectedOptions[0].dataset.battery;
 
-    // 控制器限制電機功率
-    const effectivePower = Math.min(motorPower * motorEff, controllerMax);
+    // 控制器限制電機功率（這裡假設控制器功率 = motorPower）
+    const effectivePower = motorPower * motorEff;
 
-    // 假設車輛阻力常數 = 40 (可依實測調整)
+    // 假設車輛阻力常數 = 40
     const vehicleResistance = 40;
     const speed = (effectivePower / vehicleResistance).toFixed(1); // km/h
 
-    // 續航力計算: batteryWh / effectivePower * speed * 0.8 (效率係數)
+    // 續航力計算
+    let batteryWh = parseFloat(battery.match(/\d+/)[0]); // 從字串取得數字
     const range = (batteryWh / effectivePower * speed * 0.8).toFixed(1); // km
 
     resultDiv.innerHTML = `
+        <strong>推薦控制器：</strong> ${controller}<br>
+        <strong>推薦電池：</strong> ${battery}<br>
         <strong>預估最高速度：</strong> ${speed} km/h<br>
         <strong>預估續航力：</strong> ${range} km
     `;
@@ -179,8 +90,6 @@ function calculate() {
 
 // 監聽下拉選單變化
 document.getElementById('motorSelect').addEventListener('change', calculate);
-document.getElementById('batterySelect').addEventListener('change', calculate);
-document.getElementById('controllerSelect').addEventListener('change', calculate);
 
 // 初次載入計算
 calculate();
