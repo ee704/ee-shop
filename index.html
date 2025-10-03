@@ -40,7 +40,7 @@ footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#
   <option value="3000WP">3000WP</option>
   <option value="5000WP">5000WP</option>
   <option value="6000WP">6000WP</option>
-  <option value="8000WP">8000WP</option>
+  <option value="9000WP">9000WP</option>
 </select>
 
 <label for="controllerSelect">選擇南京遠驅控制器：</label>
@@ -63,7 +63,7 @@ footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#
   </div>
   <div class="card">
     <h3>坐等更新</h3>
-    <p>更多教學內容即將上線。</p>
+    <p>閉嘴乖乖等。</p>
   </div>
 </div>
 </section>
@@ -76,8 +76,8 @@ const speedData = {
   "72260": { "2000":80 },
   "72450": { "3000":90, "3000WP":120 },
   "72680": { "3000WP":130, "5000WP":135 },
-  "72850": { "6000WP":140, "8000WP":155 },
-  "72890": { "6000WP":145, "8000WP":160 }
+  "72850": { "6000WP":140, "9000WP":170 },
+  "72890": { "6000WP":145, "9000WP":180 }
 };
 
 // 每個電機可用控制器對應表
@@ -87,18 +87,18 @@ const motorControllers = {
   "3000WP": ["72450","72680"],
   "5000WP": ["72680"],
   "6000WP": ["72850","72890"],
-  "8000WP": ["72850","72890"]
+  "9000WP": ["72850","72890"]
 };
 
 // 價格資料
 const priceData = {
   motor: {
-    "2000": 4000,
-    "3000": 6000,
-    "3000WP": 7500,
-    "5000WP": 9500,
-    "6000WP": 12000,
-    "8000WP": 15000
+    "2000": 3500,
+    "3000": 4000,
+    "3000WP": 6500,
+    "5000WP": 10000,
+    "6000WP": 14000,
+    "9000WP": 17500
   },
   controller: {
     "72260": 3800,
