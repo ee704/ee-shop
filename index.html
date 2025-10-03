@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>花工制霸 - 電摩改裝計算器</title>
-<meta name="description" content="花工制霸 - 電摩改裝計算器，可查詢電機、控制器、速度與續航力">
-<meta name="keywords" content="電摩, 電動摩托, 改裝, 電機, 控制器, 速度, 續航力">
+<meta name="description" content="花工制霸 - 電摩改裝計算器，可查詢電機、控制器、速度、續航力與價格">
+<meta name="keywords" content="電摩, 電動摩托, 改裝, 電機, 控制器, 速度, 續航力, 價格">
 <style>
 body{font-family:Arial;background:#121212;color:#f5f5f5;margin:0;padding:0;}
 header{background:#1f1f1f;padding:20px;text-align:center;font-size:2em;font-weight:bold;color:#ffcc00;}
@@ -48,7 +48,7 @@ footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#
   <!-- 控制器選項會自動依電機篩選 -->
 </select>
 
-<div class="result" id="result">選擇電機以查看可用控制器及預估速度與續航力（電池固定 72V）。</div>
+<div class="result" id="result">選擇電機以查看可用控制器及預估速度、續航力與價格（電池固定 72V）。</div>
 </section>
 
 <section id="tutorial">
@@ -71,6 +71,7 @@ footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#
 <footer>&copy; 2025 花工制霸 | 版權所有</footer>
 
 <script>
+// 已知的實測速度資料
 const speedData = {
   "72260": { "2000":80 },
   "72450": { "3000":90, "3000WP":120 },
@@ -87,6 +88,25 @@ const motorControllers = {
   "5000WP": ["72680"],
   "6000WP": ["72850","72890"],
   "8000WP": ["72850","72890"]
+};
+
+// 價格資料
+const priceData = {
+  motor: {
+    "2000": 4000,
+    "3000": 6000,
+    "3000WP": 7500,
+    "5000WP": 9500,
+    "6000WP": 12000,
+    "8000WP": 15000
+  },
+  controller: {
+    "72260": 3800,
+    "72450": 4800,
+    "72680": 5500,
+    "72850": 6500,
+    "72890": 7500
+  }
 };
 
 function updateControllers(){
@@ -119,11 +139,16 @@ function calculate(){
   const motorPower = parseInt(motor.replace(/\D/g,'')); // 取數字部分
   const range = (batteryWh / motorPower * speed * 0.8).toFixed(1);
 
+  const motorPrice = priceData.motor[motor] || "未知";
+  const controllerPrice = priceData.controller[controller] || "未知";
+
   resultDiv.innerHTML = `
+    <strong>選擇電機：</strong> ${motor}W<br>
     <strong>選擇控制器：</strong> ${controller}<br>
     <strong>固定電池：</strong> 72V 70Ah (5040Wh)<br>
     <strong>預估最高速度：</strong> ${speed} km/h<br>
-    <strong>預估續航力：</strong> ${range} km
+    <strong>預估續航力：</strong> ${range} km<br>
+    <strong>參考價格：</strong> 電機 NT$${motorPrice} | 控制器 NT$${controllerPrice}
   `;
 }
 
