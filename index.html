@@ -9,10 +9,11 @@
 <style>
 body{font-family:Arial;background:#121212;color:#f5f5f5;margin:0;padding:0;}
 header{background:#1f1f1f;padding:20px;text-align:center;font-size:2em;font-weight:bold;color:#ffcc00;}
-nav{background:#222;display:flex;justify-content:center;}
+nav{background:#222;display:flex;justify-content:center;flex-wrap:wrap;}
 nav a{color:#f5f5f5;text-decoration:none;margin:10px 20px;padding:10px 15px;transition:.3s;}
 nav a:hover{background:#ffcc00;color:#121212;border-radius:5px;}
-section{padding:20px;max-width:1200px;margin:auto;}
+section{padding:20px;max-width:1200px;margin:auto;display:none;}
+section.active{display:block;}
 h2{color:#ffcc00;border-bottom:2px solid #ffcc00;padding-bottom:5px;}
 label{display:block;margin-top:15px;}
 select{width:100%;padding:8px;margin-top:5px;border-radius:5px;border:none;font-size:1em;}
@@ -21,17 +22,23 @@ select{width:100%;padding:8px;margin-top:5px;border-radius:5px;border:none;font-
 .card{background:#1f1f1f;padding:15px;border-radius:10px;width:250px;box-shadow:0 0 10px #000;transition:.3s;}
 .card:hover{transform:scale(1.05);box-shadow:0 0 15px #ffcc00;}
 footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#888;}
+button{background:#ffcc00;color:#121212;border:none;padding:10px 15px;border-radius:5px;font-weight:bold;cursor:pointer;transition:.3s;}
+button:hover{background:#ffaa00;}
+.compare-container{display:flex;gap:20px;flex-wrap:wrap;}
+.compare-box{flex:1;min-width:250px;background:#1f1f1f;padding:15px;border-radius:10px;box-shadow:0 0 10px #000;}
 </style>
 </head>
 <body>
 
 <header>花工制霸 - 電摩改裝計算器</header>
 <nav>
-    <a href="#calculator">改裝計算器</a>
-    <a href="#tutorial">其他教學與介紹</a>
+    <a href="#" onclick="showSection('calculator')">改裝計算器</a>
+    <a href="#" onclick="showSection('compare')">對比與推薦</a>
+    <a href="#" onclick="showSection('tutorial')">教學與介紹</a>
 </nav>
 
-<section id="calculator">
+<!-- 改裝計算器 -->
+<section id="calculator" class="active">
 <h2>改裝組合查詢（選電機與控制器）</h2>
 <label for="motorSelect">選擇電機：</label>
 <select id="motorSelect">
@@ -44,15 +51,39 @@ footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#
 </select>
 
 <label for="controllerSelect">選擇南京遠驅控制器：</label>
-<select id="controllerSelect">
-  <!-- 控制器選項會自動依電機篩選 -->
-</select>
+<select id="controllerSelect"></select>
 
 <div class="result" id="result">選擇電機以查看可用控制器及預估速度、續航力與價格（電池固定 72V）。</div>
 </section>
 
+<!-- 對比與推薦 -->
+<section id="compare">
+<h2>對比與推薦</h2>
+<div class="compare-container">
+  <div class="compare-box">
+    <h3>組合 A</h3>
+    <label>電機：</label>
+    <select id="motorA"></select>
+    <label>控制器：</label>
+    <select id="controllerA"></select>
+  </div>
+
+  <div class="compare-box">
+    <h3>組合 B</h3>
+    <label>電機：</label>
+    <select id="motorB"></select>
+    <label>控制器：</label>
+    <select id="controllerB"></select>
+  </div>
+</div>
+<br>
+<button onclick="compare()">開始對比</button>
+<div class="result" id="compareResult">選擇兩組組合後開始對比。</div>
+</section>
+
+<!-- 教學與介紹 -->
 <section id="tutorial">
-<h2>其他教學與介紹</h2>
+<h2>教學與介紹</h2>
 <div class="card-container">
   <div class="card">
     <h3>電機瓦數與瓦片說明</h3>
@@ -71,7 +102,7 @@ footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#
 <footer>&copy; 2025 花工制霸 | 版權所有</footer>
 
 <script>
-// 已知的實測速度資料
+// 基本資料
 const speedData = {
   "72260": { "2000":80 },
   "72450": { "3000":90, "3000WP":120 },
@@ -79,8 +110,6 @@ const speedData = {
   "72850": { "6000WP":140, "9000WP":170 },
   "72890": { "6000WP":145, "9000WP":180 }
 };
-
-// 每個電機可用控制器對應表
 const motorControllers = {
   "2000": ["72260"],
   "3000": ["72450"],
@@ -89,74 +118,103 @@ const motorControllers = {
   "6000WP": ["72850","72890"],
   "9000WP": ["72850","72890"]
 };
-
-// 價格資料
 const priceData = {
-  motor: {
-    "2000": 3500,
-    "3000": 4000,
-    "3000WP": 6500,
-    "5000WP": 10000,
-    "6000WP": 14000,
-    "9000WP": 17500
-  },
-  controller: {
-    "72260": 3800,
-    "72450": 4800,
-    "72680": 5500,
-    "72850": 6500,
-    "72890": 7500
-  }
+  motor: { "2000":3500,"3000":4000,"3000WP":6500,"5000WP":10000,"6000WP":14000,"9000WP":17500 },
+  controller: { "72260":3800,"72450":4800,"72680":5500,"72850":6500,"72890":7500 }
 };
 
+// 切換頁面
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// 初始化下拉選單
+function populateSelects(){
+  const motorKeys = Object.keys(motorControllers);
+  ['motorA','motorB','motorSelect'].forEach(id=>{
+    const select=document.getElementById(id);
+    motorKeys.forEach(m=>{
+      const opt=document.createElement('option');
+      opt.value=m;opt.text=m;
+      select.appendChild(opt);
+    });
+  });
+  updateControllers();
+  updateCompareControllers();
+}
+
+// 主頁控制器更新
 function updateControllers(){
-  const motor = document.getElementById('motorSelect').value;
-  const controllerSelect = document.getElementById('controllerSelect');
-  controllerSelect.innerHTML = '';
-  motorControllers[motor].forEach(ctrl=>{
-    const option = document.createElement('option');
-    option.value = ctrl;
-    option.text = ctrl;
-    controllerSelect.appendChild(option);
+  const motor=document.getElementById('motorSelect').value;
+  const ctrlSelect=document.getElementById('controllerSelect');
+  ctrlSelect.innerHTML='';
+  motorControllers[motor].forEach(c=>{
+    const o=document.createElement('option');o.value=c;o.text=c;ctrlSelect.appendChild(o);
   });
   calculate();
 }
 
+// 對比頁控制器更新
+function updateCompareControllers(){
+  ['A','B'].forEach(x=>{
+    const motor=document.getElementById('motor'+x).value||'2000';
+    const ctrlSelect=document.getElementById('controller'+x);
+    ctrlSelect.innerHTML='';
+    motorControllers[motor].forEach(c=>{
+      const o=document.createElement('option');o.value=c;o.text=c;ctrlSelect.appendChild(o);
+    });
+  });
+}
+
+// 計算主頁結果
 function calculate(){
-  const motor = document.getElementById('motorSelect').value;
-  const controller = document.getElementById('controllerSelect').value;
-  const resultDiv = document.getElementById('result');
-  const batteryWh = 72*70; // 72V 70Ah
-
-  let speed;
-
-  if(speedData[controller] && speedData[controller][motor]){
-    speed = speedData[controller][motor];
-  }else{
-    speed = (90 * (parseInt(motor.replace(/\D/g,''))/3000)).toFixed(1);
-  }
-
-  const motorPower = parseInt(motor.replace(/\D/g,'')); // 取數字部分
-  const range = (batteryWh / motorPower * speed * 0.8).toFixed(1);
-
-  const motorPrice = priceData.motor[motor] || "未知";
-  const controllerPrice = priceData.controller[controller] || "未知";
-
-  resultDiv.innerHTML = `
-    <strong>選擇電機：</strong> ${motor}W<br>
-    <strong>選擇控制器：</strong> ${controller}<br>
-    <strong>固定電池：</strong> 72V 70Ah (5040Wh)<br>
-    <strong>預估最高速度：</strong> ${speed} km/h<br>
-    <strong>預估續航力：</strong> ${range} km<br>
-    <strong>參考價格：</strong> 電機 NT$${motorPrice} | 控制器 NT$${controllerPrice}
+  const m=document.getElementById('motorSelect').value;
+  const c=document.getElementById('controllerSelect').value;
+  const res=document.getElementById('result');
+  const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
+  const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
+  res.innerHTML=`
+  <strong>選擇電機：</strong>${m}W<br>
+  <strong>選擇控制器：</strong>${c}<br>
+  <strong>預估最高速度：</strong>${speed} km/h<br>
+  <strong>預估續航力：</strong>${range} km<br>
+  <strong>參考價格：</strong>電機 NT$${priceData.motor[m]} | 控制器 NT$${priceData.controller[c]}
   `;
 }
 
-document.getElementById('motorSelect').addEventListener('change', updateControllers);
-document.getElementById('controllerSelect').addEventListener('change', calculate);
+// 對比功能
+function compare(){
+  const getInfo=(m,c)=>{
+    const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
+    const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
+    const total=priceData.motor[m]+priceData.controller[c];
+    return {m,c,speed,range,total};
+  };
+  const A=getInfo(document.getElementById('motorA').value,document.getElementById('controllerA').value);
+  const B=getInfo(document.getElementById('motorB').value,document.getElementById('controllerB').value);
+  const res=document.getElementById('compareResult');
+  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':
+                    A.total<B.total? '推薦組合 A（性價比更高💰）':
+                    '推薦組合 B（更平衡⚙️）';
+  res.innerHTML=`
+  <h3>對比結果</h3>
+  <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h, ${A.range} km, 總價 NT$${A.total}</p>
+  <p>組合 B：${B.m}W + ${B.c} → ${B.speed} km/h, ${B.range} km, 總價 NT$${B.total}</p>
+  <strong>${recommend}</strong>
+  `;
+}
 
-// 初次載入
-updateControllers();
+// 綁定事件
+document.getElementById('motorSelect').addEventListener('change',updateControllers);
+document.getElementById('controllerSelect').addEventListener('change',calculate);
+['motorA','motorB'].forEach(id=>{
+  document.addEventListener('change',e=>{
+    if(e.target.id===id) updateCompareControllers();
+  });
+});
+
+populateSelects();
 </script>
 </body>
 </html>
