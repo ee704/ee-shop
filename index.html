@@ -1,262 +1,221 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>花工制霸 - 電摩改裝資料庫</title>
-  <style>
-    body {
-      font-family: "Noto Sans TC", sans-serif;
-      background: #0b0b0b;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: #111;
-      text-align: center;
-      padding: 20px;
-      font-size: 26px;
-      font-weight: bold;
-      color: #00eaff;
-      box-shadow: 0 0 10px #00eaff;
-    }
-
-    nav {
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    nav button {
-      background: #00eaff;
-      color: black;
-      border: none;
-      padding: 10px 15px;
-      margin: 5px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    nav button:hover {
-      background: #00ffaa;
-    }
-
-    section {
-      display: none;
-      padding: 20px;
-      text-align: center;
-      animation: fade 0.3s;
-    }
-
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .active {
-      display: block;
-    }
-
-    select, input {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
-      border: none;
-    }
-
-    .result {
-      background: #1a1a1a;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      color: #777;
-    }
-
-    form {
-      background: #1e1e1e;
-      padding: 25px;
-      border-radius: 20px;
-      max-width: 400px;
-      margin: 0 auto;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-    }
-
-    input, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-    }
-
-    input, textarea {
-      background: #222;
-      color: white;
-    }
-
-    button {
-      background: #00eaff;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #00ffaa;
-    }
-
-    .success-message {
-      display: none;
-      color: #00ffaa;
-      margin-top: 20px;
-      font-size: 18px;
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>花工制霸 - 電摩改裝計算器</title>
+<meta name="description" content="花工制霸 - 電摩改裝計算器，可查詢電機、控制器、速度、續航力與價格">
+<meta name="keywords" content="電摩, 電動摩托, 改裝, 電機, 控制器, 速度, 續航力, 價格">
+<style>
+body{font-family:Arial;background:#121212;color:#f5f5f5;margin:0;padding:0;}
+header{background:#1f1f1f;padding:20px;text-align:center;font-size:2em;font-weight:bold;color:#ffcc00;}
+nav{background:#222;display:flex;justify-content:center;flex-wrap:wrap;}
+nav a{color:#f5f5f5;text-decoration:none;margin:10px 20px;padding:10px 15px;transition:.3s;}
+nav a:hover{background:#ffcc00;color:#121212;border-radius:5px;}
+section{padding:20px;max-width:1200px;margin:auto;display:none;}
+section.active{display:block;}
+h2{color:#ffcc00;border-bottom:2px solid #ffcc00;padding-bottom:5px;}
+label{display:block;margin-top:15px;}
+select{width:100%;padding:8px;margin-top:5px;border-radius:5px;border:none;font-size:1em;}
+.result{margin-top:20px;background:#1f1f1f;padding:15px;border-radius:10px;box-shadow:0 0 10px #000;font-size:1.1em;}
+.card-container{display:flex;flex-wrap:wrap;gap:20px;justify-content:flex-start;}
+.card{background:#1f1f1f;padding:15px;border-radius:10px;width:250px;box-shadow:0 0 10px #000;transition:.3s;}
+.card:hover{transform:scale(1.05);box-shadow:0 0 15px #ffcc00;}
+footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#888;}
+button{background:#ffcc00;color:#121212;border:none;padding:10px 15px;border-radius:5px;font-weight:bold;cursor:pointer;transition:.3s;}
+button:hover{background:#ffaa00;}
+.compare-container{display:flex;gap:20px;flex-wrap:wrap;}
+.compare-box{flex:1;min-width:250px;background:#1f1f1f;padding:15px;border-radius:10px;box-shadow:0 0 10px #000;}
+</style>
 </head>
 <body>
 
-  <header>🏍️ 花工制霸 - 電摩改裝資料庫</header>
+<header>花工制霸 - 電摩改裝計算器</header>
+<nav>
+    <a href="#" onclick="showSection('calculator')">改裝計算器</a>
+    <a href="#" onclick="showSection('compare')">對比與推薦</a>
+    <a href="#" onclick="showSection('tutorial')">教學與介紹</a>
+</nav>
 
-  <nav>
-    <button onclick="showPage('main')">改裝查詢</button>
-    <button onclick="showPage('compare')">對比與推薦</button>
-    <button onclick="showPage('upload')">上傳作品</button>
-    <button onclick="showPage('info')">教學與介紹</button>
-  </nav>
+<!-- 改裝計算器 -->
+<section id="calculator" class="active">
+<h2>改裝組合查詢（選電機與控制器）</h2>
+<label for="motorSelect">選擇電機：</label>
+<select id="motorSelect">
+  <option value="2000">2000W</option>
+  <option value="3000">3000W</option>
+  <option value="3000WP">3000WP</option>
+  <option value="5000WP">5000WP</option>
+  <option value="6000WP">6000WP</option>
+  <option value="9000WP">9000WP</option>
+</select>
 
-  <!-- 改裝查詢 -->
-  <section id="main" class="active">
-    <h2>⚙️ 改裝速度查詢</h2>
-    <p>選擇你的電機與控制器（72V系統）查看實際速度</p>
+<label for="controllerSelect">選擇南京遠驅控制器：</label>
+<select id="controllerSelect"></select>
 
-    <select id="motor">
-      <option value="2000">2000W</option>
-      <option value="3000">3000W</option>
-      <option value="3000p">3000WP</option>
-      <option value="5000p">5000WP</option>
-      <option value="6000p">6000WP</option>
-      <option value="8000p">8000WP</option>
-    </select>
+<div class="result" id="result">選擇電機以查看可用控制器及預估速度、續航力與價格（電池固定 72V）。</div>
+</section>
 
-    <select id="controller">
-      <option value="72260">南京遠驅 72260</option>
-      <option value="72450">南京遠驅 72450</option>
-      <option value="72680">南京遠驅 72680</option>
-      <option value="72850">南京遠驅 72850</option>
-      <option value="72890">南京遠驅 72890</option>
-    </select>
+<!-- 對比與推薦 -->
+<section id="compare">
+<h2>對比與推薦</h2>
+<div class="compare-container">
+  <div class="compare-box">
+    <h3>組合 A</h3>
+    <label>電機：</label>
+    <select id="motorA"></select>
+    <label>控制器：</label>
+    <select id="controllerA"></select>
+  </div>
 
-    <button onclick="calculate()">查看結果</button>
+  <div class="compare-box">
+    <h3>組合 B</h3>
+    <label>電機：</label>
+    <select id="motorB"></select>
+    <label>控制器：</label>
+    <select id="controllerB"></select>
+  </div>
+</div>
+<br>
+<button onclick="compare()">開始對比</button>
+<div class="result" id="compareResult">選擇兩組組合後開始對比。</div>
+</section>
 
-    <div class="result" id="result"></div>
-  </section>
+<!-- 教學與介紹 -->
+<section id="tutorial">
+<h2>教學與介紹</h2>
+<div class="card-container">
+  <div class="card">
+    <h3>電機瓦數與瓦片說明</h3>
+    <p>瓦數（W） = 電機整體「力量大小」</p>
+    <p>瓦片（片） = 電機「扭力與轉速特性」</p>
+    <p>瓦數高 + 瓦片大 → 扭力非常強，速度視電壓而定</p>
+    <p>瓦數低 + 瓦片小 → 省電，但加速慢、爬坡弱</p>
+  </div>
+  <div class="card">
+    <h3>坐等更新</h3>
+    <p>閉嘴乖乖等。</p>
+  </div>
+</div>
+</section>
 
-  <!-- 對比與推薦 -->
-  <section id="compare">
-    <h2>📊 對比與推薦</h2>
-    <p>根據使用者輸入的組合推薦合適搭配</p>
-    <ul style="list-style:none; padding:0;">
-      <li>🏁 2000W → 建議搭配 72260（速度約80）</li>
-      <li>⚡ 3000W → 建議搭配 72450（速度約90）</li>
-      <li>🔥 3000WP → 建議搭配 72450~72680（速度120~130）</li>
-      <li>💨 5000WP → 建議搭配 72680~72890（速度135~145）</li>
-      <li>⚙️ 6000WP → 建議搭配 72850~72890（速度140~155）</li>
-      <li>🚀 8000WP → 建議搭配 72890（速度155~160）</li>
-    </ul>
-  </section>
+<footer>&copy; 2025 花工制霸 | 版權所有</footer>
 
-  <!-- 上傳作品 -->
-  <section id="upload">
-    <h2>📸 上傳你的電摩作品</h2>
-    <p>可直接用手機拍照上傳，經審核後發布。</p>
+<script>
+// 基本資料
+const speedData = {
+  "72260": { "2000":80 },
+  "72450": { "3000":90, "3000WP":120 },
+  "72680": { "3000WP":130, "5000WP":135 },
+  "72850": { "6000WP":140, "9000WP":170 },
+  "72890": { "6000WP":145, "9000WP":180 }
+};
+const motorControllers = {
+  "2000": ["72260"],
+  "3000": ["72450"],
+  "3000WP": ["72450","72680"],
+  "5000WP": ["72680"],
+  "6000WP": ["72850","72890"],
+  "9000WP": ["72850","72890"]
+};
+const priceData = {
+  motor: { "2000":3500,"3000":4000,"3000WP":6500,"5000WP":10000,"6000WP":14000,"9000WP":17500 },
+  controller: { "72260":3800,"72450":4800,"72680":5500,"72850":6500,"72890":7500 }
+};
 
-    <form id="uploadForm" action="https://formspree.io/f/xxxxxx" method="POST" enctype="multipart/form-data">
-      <input type="text" name="name" placeholder="你的名稱或ID" required>
-      <textarea name="description" placeholder="請簡單介紹改裝內容..." rows="4" required></textarea>
-      <input type="file" name="photo" accept="image/*" required>
-      <button type="submit">送出審核</button>
-      <p class="success-message" id="successMsg">✅ 已成功送出！感謝你的投稿～</p>
-    </form>
-  </section>
+// 切換頁面
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-  <!-- 教學與介紹 -->
-  <section id="info">
-    <h2>🔧 教學與介紹</h2>
-    <p>
-      <strong>瓦數（W）</strong> = 電機整體「力量大小」<br>
-      <strong>瓦片（片）</strong> = 電機「扭力與轉速特性」<br><br>
-      瓦數高 + 瓦片大 → 扭力非常強，速度視電壓而定<br>
-      瓦數低 + 瓦片小 → 省電，但加速慢、爬坡弱<br><br>
-      電壓越高 → 轉速越快（速度增加）<br>
-      電流越高 → 扭力越強（起步更猛）
-    </p>
-  </section>
-
-  <footer>© 2025 花工制霸 | 由 SHAN7 開發</footer>
-
-  <script>
-    function showPage(id) {
-      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-    }
-
-    const data = {
-      "2000": { "72260": 80 },
-      "3000": { "72450": 90 },
-      "3000p": { "72450": 120, "72680": 130 },
-      "5000p": { "72680": 135, "72850": 140, "72890": 145 },
-      "6000p": { "72850": 140, "72890": 145 },
-      "8000p": { "72850": 160, "72890": 155 }
-    };
-
-    function calculate() {
-      const m = document.getElementById("motor").value;
-      const c = document.getElementById("controller").value;
-      const result = document.getElementById("result");
-      const speed = data[m]?.[c];
-
-      if (speed) {
-        result.innerHTML = `<h3>🚀 預估速度：約 <span style="color:#00ffaa;">${speed} km/h</span></h3>`;
-      } else {
-        result.innerHTML = `<p style="color:#f55;">⚠️ 此組合未有資料，請參考其他對比。</p>`;
-      }
-    }
-
-    const form = document.getElementById('uploadForm');
-    const msg = document.getElementById('successMsg');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const data = new FormData(form);
-
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (response.ok) {
-        msg.style.display = 'block';
-        form.reset();
-      } else {
-        alert('送出失敗，請再試一次。');
-      }
+// 初始化下拉選單
+function populateSelects(){
+  const motorKeys = Object.keys(motorControllers);
+  ['motorA','motorB','motorSelect'].forEach(id=>{
+    const select=document.getElementById(id);
+    motorKeys.forEach(m=>{
+      const opt=document.createElement('option');
+      opt.value=m;opt.text=m;
+      select.appendChild(opt);
     });
-  </script>
+  });
+  updateControllers();
+  updateCompareControllers();
+}
 
+// 主頁控制器更新
+function updateControllers(){
+  const motor=document.getElementById('motorSelect').value;
+  const ctrlSelect=document.getElementById('controllerSelect');
+  ctrlSelect.innerHTML='';
+  motorControllers[motor].forEach(c=>{
+    const o=document.createElement('option');o.value=c;o.text=c;ctrlSelect.appendChild(o);
+  });
+  calculate();
+}
+
+// 對比頁控制器更新
+function updateCompareControllers(){
+  ['A','B'].forEach(x=>{
+    const motor=document.getElementById('motor'+x).value||'2000';
+    const ctrlSelect=document.getElementById('controller'+x);
+    ctrlSelect.innerHTML='';
+    motorControllers[motor].forEach(c=>{
+      const o=document.createElement('option');o.value=c;o.text=c;ctrlSelect.appendChild(o);
+    });
+  });
+}
+
+// 計算主頁結果
+function calculate(){
+  const m=document.getElementById('motorSelect').value;
+  const c=document.getElementById('controllerSelect').value;
+  const res=document.getElementById('result');
+  const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
+  const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
+  res.innerHTML=`
+  <strong>選擇電機：</strong>${m}W<br>
+  <strong>選擇控制器：</strong>${c}<br>
+  <strong>預估最高速度：</strong>${speed} km/h<br>
+  <strong>預估續航力：</strong>${range} km<br>
+  <strong>參考價格：</strong>電機 NT$${priceData.motor[m]} | 控制器 NT$${priceData.controller[c]}
+  `;
+}
+
+// 對比功能
+function compare(){
+  const getInfo=(m,c)=>{
+    const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
+    const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
+    const total=priceData.motor[m]+priceData.controller[c];
+    return {m,c,speed,range,total};
+  };
+  const A=getInfo(document.getElementById('motorA').value,document.getElementById('controllerA').value);
+  const B=getInfo(document.getElementById('motorB').value,document.getElementById('controllerB').value);
+  const res=document.getElementById('compareResult');
+  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':
+                    A.total<B.total? '推薦組合 A（性價比更高💰）':
+                    '推薦組合 B（更平衡⚙️）';
+  res.innerHTML=`
+  <h3>對比結果</h3>
+  <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h, ${A.range} km, 總價 NT$${A.total}</p>
+  <p>組合 B：${B.m}W + ${B.c} → ${B.speed} km/h, ${B.range} km, 總價 NT$${B.total}</p>
+  <strong>${recommend}</strong>
+  `;
+}
+
+// 綁定事件
+document.getElementById('motorSelect').addEventListener('change',updateControllers);
+document.getElementById('controllerSelect').addEventListener('change',calculate);
+['motorA','motorB'].forEach(id=>{
+  document.addEventListener('change',e=>{
+    if(e.target.id===id) updateCompareControllers();
+  });
+});
+
+populateSelects();
+</script>
 </body>
 </html>
 
