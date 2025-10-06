@@ -155,4 +155,113 @@ const speedData = {
   "72450": { "3000":90, "3000WP":120 },
   "72680": { "3000WP":130, "5000WP":135 },
   "72850": { "6000WP":140, "9000WP":170 },
-  "72890": {
+  "72890": { "6000WP":145, "9000WP":180 },
+  "等待更新": {
+    "11000WP":172.3,
+    "12000WP":180.0,
+    "15000WP":201.2,
+    "20000WP":232.4
+  }
+};
+const motorControllers = {
+  "2000": ["72260"],
+  "3000": ["72450"],
+  "3000WP": ["72450","72680"],
+  "5000WP": ["72680"],
+  "6000WP": ["72850","72890"],
+  "9000WP": ["72850","72890"],
+  "11000WP": ["等待更新"],
+  "12000WP": ["等待更新"],
+  "15000WP": ["等待更新"],
+  "20000WP": ["等待更新"]
+};
+
+// 切換頁面
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// 初始化下拉選單
+function populateSelects(){
+  const motorKeys = Object.keys(motorControllers);
+  ['motorA','motorB','motorSelect'].forEach(id=>{
+    const select=document.getElementById(id);
+    select.innerHTML = '';
+    motorKeys.forEach(m=>{
+      const opt=document.createElement('option'); opt.value=m; opt.text=m; select.appendChild(opt);
+    });
+  });
+  updateControllers();
+  updateCompareControllers();
+}
+
+// 主頁控制器更新
+function updateControllers(){
+  const motor=document.getElementById('motorSelect').value;
+  const ctrlSelect=document.getElementById('controllerSelect');
+  ctrlSelect.innerHTML='';
+  motorControllers[motor].forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.text=c; ctrlSelect.appendChild(o);
+  });
+  calculate();
+}
+
+// 對比頁控制器更新
+function updateCompareControllers(){
+  ['A','B'].forEach(x=>{
+    const motor=document.getElementById('motor'+x).value||'2000';
+    const ctrlSelect=document.getElementById('controller'+x);
+    ctrlSelect.innerHTML='';
+    motorControllers[motor].forEach(c=>{
+      const o=document.createElement('option'); o.value=c; o.text=c; ctrlSelect.appendChild(o);
+    });
+  });
+}
+
+// 計算主頁結果
+function calculate(){
+  const m=document.getElementById('motorSelect').value;
+  const c=document.getElementById('controllerSelect').value;
+  const res=document.getElementById('result');
+  const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
+  const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
+  res.innerHTML=`
+  <strong>選擇電機：</strong>${m}W<br>
+  <strong>選擇控制器：</strong>${c}<br>
+  <strong>預估最高速度：</strong>${speed} km/h（僅供參考）<br>
+  <strong>預估續航力：</strong>${range} km
+  `;
+}
+
+// 對比功能
+function compare(){
+  const getInfo=(m,c)=>{
+    const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
+    const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
+    return {m,c,speed,range};
+  };
+  const A=getInfo(document.getElementById('motorA').value,document.getElementById('controllerA').value);
+  const B=getInfo(document.getElementById('motorB').value,document.getElementById('controllerB').value);
+  const res=document.getElementById('compareResult');
+  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':'推薦組合 B（離夢想又更進一步）';
+  res.innerHTML=`
+  <h3>對比結果</h3>
+  <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h（僅供參考）, ${A.range} km</p>
+  <p>組合 B：${B.m}W + ${B.c} → ${B.speed} km/h（僅供參考）, ${B.range} km</p>
+  <strong>${recommend}</strong>
+  `;
+}
+
+document.getElementById('motorSelect').addEventListener('change',updateControllers);
+document.getElementById('controllerSelect').addEventListener('change',calculate);
+['motorA','motorB'].forEach(id=>{
+  document.addEventListener('change',e=>{
+    if(e.target.id===id) updateCompareControllers();
+  });
+});
+
+populateSelects();
+</script>
+</body>
+</html>
