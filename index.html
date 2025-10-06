@@ -19,14 +19,31 @@ label{display:block;margin-top:15px;}
 select{width:100%;padding:8px;margin-top:5px;border-radius:5px;border:none;font-size:1em;}
 .result{margin-top:20px;background:#1f1f1f;padding:15px;border-radius:10px;box-shadow:0 0 10px #000;font-size:1.1em;}
 .card-container{display:flex;flex-wrap:wrap;gap:20px;justify-content:flex-start;}
-.card{background:#1f1f1f;padding:15px;border-radius:10px;width:250px;box-shadow:0 0 10px #000;transition:.3s;text-align:center;}
-.card img{width:100%;border-radius:10px;margin-bottom:10px;}
+.card{background:#1f1f1f;padding:15px;border-radius:10px;width:250px;box-shadow:0 0 10px #000;transition:.3s;}
 .card:hover{transform:scale(1.05);box-shadow:0 0 15px #ffcc00;}
 footer{text-align:center;padding:20px;background:#1f1f1f;margin-top:20px;color:#888;}
 button{background:#ffcc00;color:#121212;border:none;padding:10px 15px;border-radius:5px;font-weight:bold;cursor:pointer;transition:.3s;}
 button:hover{background:#ffaa00;}
 .compare-container{display:flex;gap:20px;flex-wrap:wrap;}
 .compare-box{flex:1;min-width:250px;background:#1f1f1f;padding:15px;border-radius:10px;box-shadow:0 0 10px #000;}
+/* 新增推薦改車小品圖片樣式 */
+.recommend-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px #000;
+  display: block;
+  margin: 20px auto;
+}
+.recommend-card {
+  background:#1f1f1f;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 0 10px #000;
+  width:fit-content;
+  margin:auto;
+}
 </style>
 </head>
 <body>
@@ -35,6 +52,7 @@ button:hover{background:#ffaa00;}
 <nav>
     <a href="#" onclick="showSection('calculator')">改裝計算器</a>
     <a href="#" onclick="showSection('compare')">對比與推薦</a>
+    <a href="#" onclick="showSection('recommend')">推薦改車小品</a>
     <a href="#" onclick="showSection('tutorial')">教學與介紹</a>
 </nav>
 
@@ -86,6 +104,17 @@ button:hover{background:#ffaa00;}
 <div class="result" id="compareResult">選擇兩組組合後開始對比。</div>
 </section>
 
+<!-- 🔧 推薦改車小品 -->
+<section id="recommend">
+<h2>推薦改車小品</h2>
+<div class="recommend-card">
+  <img src="https://cdn.discordapp.com/attachments/1233372828829614090/1424827562651156500/image.png" alt="飛機底燈" class="recommend-img">
+  <h3>飛機底燈</h3>
+  <p>夜間行駛時散發出帥氣光線，提升辨識度與氣氛。</p>
+  <p style="color:#888;font-size:0.9em;">（圖片僅供展示，實際安裝請注意防水與線路安全）</p>
+</div>
+</section>
+
 <!-- 教學與介紹 -->
 <section id="tutorial">
 <h2>教學與介紹</h2>
@@ -97,14 +126,6 @@ button:hover{background:#ffaa00;}
     <p>瓦數高 + 瓦片大 → 扭力非常強，速度視電壓而定</p>
     <p>瓦數低 + 瓦片小 → 省電，但加速慢、爬坡弱</p>
   </div>
-
-  <!-- 新增圖片卡片 -->
-  <div class="card">
-    <img src="https://cdn.discordapp.com/attachments/1233372828829614090/1424827562651156500/image.png" alt="飛機底燈">
-    <h3>飛機底燈展示</h3>
-    <p>底部環狀LED燈，夜間辨識度提升，酷炫感滿分。</p>
-  </div>
-
   <div class="card">
     <h3>坐等更新</h3>
     <p>閉嘴乖乖等。</p>
@@ -140,10 +161,6 @@ const motorControllers = {
   "12000WP": ["等待更新"],
   "15000WP": ["等待更新"],
   "20000WP": ["等待更新"]
-};
-const priceData = {
-  motor: { "2000":3500,"3000":4000,"3000WP":6500,"5000WP":10000,"6000WP":14000,"9000WP":17500 },
-  controller: { "72260":3800,"72450":4800,"72680":5500,"72850":6500,"72890":7500 }
 };
 
 // 切換頁面
@@ -216,7 +233,7 @@ function compare(){
   const A=getInfo(document.getElementById('motorA').value,document.getElementById('controllerA').value);
   const B=getInfo(document.getElementById('motorB').value,document.getElementById('controllerB').value);
   const res=document.getElementById('compareResult');
-  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':'推薦組合B(離夢想又更進一步）';
+  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':'推薦組合 B（離夢想又更進一步）';
   res.innerHTML=`
   <h3>對比結果</h3>
   <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h（僅供參考）, ${A.range} km</p>
@@ -225,7 +242,6 @@ function compare(){
   `;
 }
 
-// 綁定事件
 document.getElementById('motorSelect').addEventListener('change',updateControllers);
 document.getElementById('controllerSelect').addEventListener('change',calculate);
 ['motorA','motorB'].forEach(id=>{
