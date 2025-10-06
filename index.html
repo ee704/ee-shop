@@ -48,10 +48,10 @@ button:hover{background:#ffaa00;}
   <option value="5000WP">5000WP</option>
   <option value="6000WP">6000WP</option>
   <option value="9000WP">9000WP</option>
-  <option value="11000">11000W</option>
-  <option value="12000">12000W</option>
-  <option value="15000">15000W</option>
-  <option value="20000">20000W</option>
+  <option value="11000WP">11000W</option>
+  <option value="12000WP">12000W</option>
+  <option value="15000WP">15000W</option>
+  <option value="20000WP">20000W</option>
 </select>
 
 <label for="controllerSelect">選擇南京遠驅控制器：</label>
@@ -114,10 +114,10 @@ const speedData = {
   "72850": { "6000WP":140, "9000WP":170 },
   "72890": { "6000WP":145, "9000WP":180 },
   "等待更新": {
-    "11000":172.3,
-    "12000":180.0,
-    "15000":201.2,
-    "20000":232.4
+    "11000WP":172.3,
+    "12000WP":180.0,
+    "15000WP":201.2,
+    "20000WP":232.4
   }
 };
 const motorControllers = {
@@ -127,10 +127,10 @@ const motorControllers = {
   "5000WP": ["72680"],
   "6000WP": ["72850","72890"],
   "9000WP": ["72850","72890"],
-  "11000": ["等待更新"],
-  "12000": ["等待更新"],
-  "15000": ["等待更新"],
-  "20000": ["等待更新"]
+  "11000WP": ["等待更新"],
+  "12000WP": ["等待更新"],
+  "15000WP": ["等待更新"],
+  "20000WP": ["等待更新"]
 };
 const priceData = {
   motor: { "2000":3500,"3000":4000,"3000WP":6500,"5000WP":10000,"6000WP":14000,"9000WP":17500 },
@@ -207,7 +207,7 @@ function compare(){
   const A=getInfo(document.getElementById('motorA').value,document.getElementById('controllerA').value);
   const B=getInfo(document.getElementById('motorB').value,document.getElementById('controllerB').value);
   const res=document.getElementById('compareResult');
-  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':'推薦組合 B（更平衡⚙️）';
+  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':'推薦組合B(離夢想又更進一步）';
   res.innerHTML=`
   <h3>對比結果</h3>
   <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h（僅供參考）, ${A.range} km</p>
