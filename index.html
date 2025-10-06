@@ -48,12 +48,16 @@ button:hover{background:#ffaa00;}
   <option value="5000WP">5000WP</option>
   <option value="6000WP">6000WP</option>
   <option value="9000WP">9000WP</option>
+  <option value="11000">11000W</option>
+  <option value="12000">12000W</option>
+  <option value="15000">15000W</option>
+  <option value="20000">20000W</option>
 </select>
 
 <label for="controllerSelect">選擇南京遠驅控制器：</label>
 <select id="controllerSelect"></select>
 
-<div class="result" id="result">選擇電機以查看可用控制器及預估速度、續航力與價格（電池固定 72V）。</div>
+<div class="result" id="result">選擇電機以查看可用控制器及預估速度、續航力（電池固定 72V）。</div>
 </section>
 
 <!-- 對比與推薦 -->
@@ -108,7 +112,13 @@ const speedData = {
   "72450": { "3000":90, "3000WP":120 },
   "72680": { "3000WP":130, "5000WP":135 },
   "72850": { "6000WP":140, "9000WP":170 },
-  "72890": { "6000WP":145, "9000WP":180 }
+  "72890": { "6000WP":145, "9000WP":180 },
+  "等待更新": {
+    "11000":172.3,
+    "12000":180.0,
+    "15000":201.2,
+    "20000":232.4
+  }
 };
 const motorControllers = {
   "2000": ["72260"],
@@ -116,7 +126,11 @@ const motorControllers = {
   "3000WP": ["72450","72680"],
   "5000WP": ["72680"],
   "6000WP": ["72850","72890"],
-  "9000WP": ["72850","72890"]
+  "9000WP": ["72850","72890"],
+  "11000": ["等待更新"],
+  "12000": ["等待更新"],
+  "15000": ["等待更新"],
+  "20000": ["等待更新"]
 };
 const priceData = {
   motor: { "2000":3500,"3000":4000,"3000WP":6500,"5000WP":10000,"6000WP":14000,"9000WP":17500 },
@@ -134,6 +148,7 @@ function populateSelects(){
   const motorKeys = Object.keys(motorControllers);
   ['motorA','motorB','motorSelect'].forEach(id=>{
     const select=document.getElementById(id);
+    select.innerHTML = '';
     motorKeys.forEach(m=>{
       const opt=document.createElement('option');
       opt.value=m;opt.text=m;
@@ -177,9 +192,8 @@ function calculate(){
   res.innerHTML=`
   <strong>選擇電機：</strong>${m}W<br>
   <strong>選擇控制器：</strong>${c}<br>
-  <strong>預估最高速度：</strong>${speed} km/h<br>
-  <strong>預估續航力：</strong>${range} km<br>
-  <strong>參考價格：</strong>電機 NT$${priceData.motor[m]} | 控制器 NT$${priceData.controller[c]}
+  <strong>預估最高速度：</strong>${speed} km/h（僅供參考）<br>
+  <strong>預估續航力：</strong>${range} km
   `;
 }
 
@@ -188,19 +202,16 @@ function compare(){
   const getInfo=(m,c)=>{
     const speed=speedData[c]?.[m]||(90*(parseInt(m)/3000)).toFixed(1);
     const range=(72*70/parseInt(m)*speed*0.8).toFixed(1);
-    const total=priceData.motor[m]+priceData.controller[c];
-    return {m,c,speed,range,total};
+    return {m,c,speed,range};
   };
   const A=getInfo(document.getElementById('motorA').value,document.getElementById('controllerA').value);
   const B=getInfo(document.getElementById('motorB').value,document.getElementById('controllerB').value);
   const res=document.getElementById('compareResult');
-  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':
-                    A.total<B.total? '推薦組合 A（性價比更高💰）':
-                    '推薦組合 B（更平衡⚙️）';
+  const recommend=A.speed>B.speed? '推薦組合 A（速度更快🔥）':'推薦組合 B（更平衡⚙️）';
   res.innerHTML=`
   <h3>對比結果</h3>
-  <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h, ${A.range} km, 總價 NT$${A.total}</p>
-  <p>組合 B：${B.m}W + ${B.c} → ${B.speed} km/h, ${B.range} km, 總價 NT$${B.total}</p>
+  <p>組合 A：${A.m}W + ${A.c} → ${A.speed} km/h（僅供參考）, ${A.range} km</p>
+  <p>組合 B：${B.m}W + ${B.c} → ${B.speed} km/h（僅供參考）, ${B.range} km</p>
   <strong>${recommend}</strong>
   `;
 }
@@ -218,4 +229,3 @@ populateSelects();
 </script>
 </body>
 </html>
-
